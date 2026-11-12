@@ -1,0 +1,68 @@
+# Pierwsze wdrożenie produkcyjne: galwork-hub (API) + galwork-dashboard +
+# galwork-arena (statyczne frontendy Next.js za nginx). Baza danych NIE jest
+# tu zarządzana - łączymy się do istniejącego PostgreSQL (DATABASE_URL w
+# .env). Parametry: skopiuj .env.example -> .env i wypełnij.
+#
+#   cp .env.example .env            # i wypełnij
+#   cp secrets/npmrc.example secrets/npmrc   # tylko jeśli rejestr npm wymaga tokenu
+#   docker compose build
+#   docker compose up -d
+#
+name: galwork
+
+services:
+  hub:
+    build:
+      context: ../galwork-hub
+    image: galwork-hub:latest
+    env_file: .env
+    ports:
+      - "${HUB_PORT:-8000}:8000"
+    restart: unless-stopped
+
+  dashboard:
+    build:
+      context: ..
+      dockerfile: galwork-dashboard/Dockerfile
+      secrets:
+        - npmrc
+        - npm_token
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-}
+        NEXT_PUBLIC_KEYCLOAK_URL: ${NEXT_PUBLIC_KEYCLOAK_URL:-}
+        NEXT_PUBLIC_KEYCLOAK_CLIENT: ${NEXT_PUBLIC_KEYCLOAK_CLIENT:-}
+    image: galwork-dashboard:latest
+    environment:
+      HUB_UPSTREAM: ${HUB_UPSTREAM:-http://hub:8000}
+    ports:
+      - "${DASHBOARD_PORT:-8080}:80"
+    depends_on:
+      - hub
+    restart: unless-stopped
+
+  arena:
+    build:
+      context: ..
+      dockerfile: galwork-arena/Dockerfile
+      secrets:
+        - npmrc
+        - npm_token
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-}
+        NEXT_PUBLIC_KEYCLOAK_URL: ${NEXT_PUBLIC_KEYCLOAK_URL:-}
+        NEXT_PUBLIC_KEYCLOAK_CLIENT: ${NEXT_PUBLIC_KEYCLOAK_CLIENT:-}
+        NEXT_PUBLIC_BPMN_FILES_URL: ${NEXT_PUBLIC_BPMN_FILES_URL:-}
+    image: galwork-arena:latest
+    environment:
+      HUB_UPSTREAM: ${HUB_UPSTREAM:-http://hub:8000}
+    ports:
+      - "${ARENA_PORT:-8081}:80"
+    depends_on:
+      - hub
+    restart: unless-stopped
+
+secrets:
+  npmrc:
+    file: ./secrets/npmrc
+  npm_token:
+    environment: NPM_TOKEN

@@ -1,0 +1,117 @@
+# Pierwsze wdrożenie produkcyjne: galwork-hub (API) + galork-arena + galwork-seal
+# Baza danych NIE jest tu zarządzana - łączymy się do istniejącego PostgreSQL 
+# (DATABASE_URL w .env). Parametry: skopiuj .env.example -> .env i wypełnij.
+#
+# Uruchamiaj z katalogu galwork/ (tu leży .env; ścieżki względne w .env
+# liczone są od tego katalogu, podprojekty są w ../galwork-*).
+#
+#   cp .env.example .env            # i wypełnij
+#   docker compose pull
+#   docker compose up -d
+#
+name: galwork
+
+services:
+  hub:
+    image: registry.galicea.org/galwork-hub:0005
+    env_file: .env
+    ports:
+      - "${HUB_PORT:-8000}:8000"
+    # wspólny katalog definicji obiegów (BPMN + formularze) w obrazie. 
+    # Hub tylko czyta - zmiany wczytuje POST /v1/wf/process-models/sync-from-disk (jako wersje draft).
+    volumes:
+      - ${SPIFFWORKFLOW_DIR:?ustaw SPIFFWORKFLOW_DIR w .env}:/app/spiffworkflow:ro
+    # 2026-11-07: pieczęć elektroniczna odpowiedzi edu-pismo
+    # (galwork-hub/edu/services/sealing.py, sekcja [seal]). Hub łączy się
+    # z seal-valkey jako użytkownik "hub"; hasło z sekretu (plik czytelny dla
+    # uid 1000 - użytkownik obrazu huba). Pozostałe SEAL_* można dać w .env.
+    environment:
+      SEAL_ENABLED: ${SEAL_ENABLED:-false}
+      SEAL_HOST: seal-valkey
+      SEAL_PASSWORD_FILE: /run/secrets/seal_valkey_hub_password
+    secrets:
+      - seal_valkey_hub_password
+    restart: unless-stopped
+
+  arena:
+    image: registry.galicea.org/galwork-arena:0004
+    environment:
+      HUB_UPSTREAM: ${HUB_UPSTREAM:-http://hub:8000}
+    ports:
+      - "${ARENA_PORT:-8081}:80"
+    depends_on:
+      - hub
+    restart: unless-stopped
+
+  # serwer plików edytorów BPMN/formularzy areny
+  # (galwork-arena/server/bpmn-files.mjs, bez zależności npm) na tym samym
+  # wspólnym katalogu co hub. Nie ma własnej autoryzacji - port tylko na
+  # 127.0.0.1, dostęp z zewnątrz wyłącznie przez nginx hosta z hasłem
+  # (location /bpmn-files/ w deploy/nginx/galwork_arena.conf).
+  bpmn-files:
+    image: node:24-alpine
+    user: "${GALWORK_UID:-1000}:${GALWORK_GID:-1000}"
+    command: ["node", "/opt/bpmn/server/bpmn-files.mjs"]
+    environment:
+      BPMN_FILES_HOST: 0.0.0.0
+      BPMN_FILES_PORT: 8090
+      SPIFFWORKFLOW_DIR: /data/spiffworkflow
+    volumes:
+      - ${BPMN_FILES_SCRIPT:-../galwork-arena/server/bpmn-files.mjs}:/opt/bpmn/server/bpmn-files.mjs:ro
+      - ${SPIFFWORKFLOW_DIR:?ustaw SPIFFWORKFLOW_DIR w .env}:/data/spiffworkflow
+    ports:
+      - "127.0.0.1:${BPMN_FILES_PORT:-8090}:8090"
+    restart: unless-stopped
+
+  # 2026-11-06: usługa pieczęci elektronicznej (../galwork-seal) i jej
+  # osobna instancja Valkey (kolejka zleceń, nie cache huba). Klucz pieczęci
+  # jest w tokenie SoftHSM2 (wolumen seal-tokens), PIN i hasła w
+  # secrets/seal/ (zob. galwork-seal/README.md, "Wdrożenie z SoftHSM2").
+  # Żadna z tych usług nie wystawia portu na zewnątrz.
+  seal-valkey:
+    image: valkey/valkey:8.1.1-alpine
+    command: ["valkey-server", "/etc/valkey/valkey.conf"]
+    volumes:
+      - ${SEAL_DIR:-../galwork-seal}/deploy/valkey/valkey.conf:/etc/valkey/valkey.conf:ro
+      - ./secrets/seal/users.acl:/etc/valkey/users.acl:ro
+      - seal-valkey-data:/data
+    restart: unless-stopped
+
+  galwork-seal:
+    build:
+      context: ${SEAL_DIR:-../galwork-seal}
+      dockerfile: deploy/Dockerfile
+    image: registry.galicea.org/galwork-seal:${SEAL_TAG:-dev}
+    environment:
+      SEAL_CONFIG: /etc/galwork-seal/seal.toml
+      SEAL_VALKEY_PASSWORD_FILE: /run/secrets/seal_valkey_password
+      SEAL_PKCS11_PIN_FILE: /run/secrets/seal_pkcs11_pin
+    secrets:
+      - seal_valkey_password
+      - seal_pkcs11_pin
+    volumes:
+      - ./deploy/seal/seal.toml:/etc/galwork-seal/seal.toml:ro
+      - ./secrets/seal/chain.pem:/etc/galwork-seal/chain.pem:ro
+      - seal-tokens:/var/lib/softhsm/tokens
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    depends_on:
+      - seal-valkey
+    restart: unless-stopped
+
+secrets:
+  seal_valkey_hub_password:
+    file: ./secrets/seal/valkey_hub_password
+  seal_valkey_password:
+    file: ./secrets/seal/valkey_seal_password
+  seal_pkcs11_pin:
+    file: ./secrets/seal/seal_pkcs11_pin
+
+volumes:
+  seal-valkey-data:
+  seal-tokens:

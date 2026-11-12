@@ -1,0 +1,6 @@
+# Lokalna konfiguracja i sekrety - nigdy w repozytorium.
+.env
+repos/.env*
+secrets/npmrc
+# sekrety usługi pieczęci (hasła Valkey, PIN-y SoftHSM2, ACL, łańcuch)
+secrets/seal/
