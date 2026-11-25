@@ -7,7 +7,8 @@ Skrypty są podzielone według ról:
 
 - `uniwersalne/` – podgląd historii, kontrole, przełączanie na tag/gałąź/hash,
 - `programista/` – gałąź, commit, push i przygotowanie PR,
-- `reviewer/` – zatwierdzanie PR, sprzątanie po PR oraz wydanie tagiem (`02release_tag.sh` – rola ownera),
+- `reviewer/` – zatwierdzanie PR i sprzątanie po PR,
+- `owner/` – wydanie wersji tagiem `v*` (`01release_tag.sh`),
 - `lib/common.sh` – wspólna obsługa `.env` i operacji na gałęziach,
 - `varia/` – skrypty awaryjne spoza standardowego przepływu (patrz niżej).
 
@@ -46,6 +47,8 @@ Zasady operowania przez git:
   Żeby coś zmienić, najpierw tworzymy własną gałąź (`git switch -c ...`).
 * **Nigdy nie robimy `git push` z repozytorium roboczego na GitHub.** Kod trafia tam
   wyłącznie przez workflow wydania jako jeden commit na wersję, bez historii roboczej.
+  Wyjątek: samo repozytorium `galwork` (informacje o projekcie, nie kod) jest publikowane
+  bezpośrednio przez remote `github`.
 
 ## Role
 
@@ -77,7 +80,7 @@ Zasady operowania przez git:
    aktualizuje się zwykłym PR (typ `chore`). Listę zmian od poprzedniej wersji daje
    `git log --oneline v1.1.0..main`.
 3. Tag: `TAG=v1.2.0`, `TAG_DESCRIPT="Wersja 1.2.0"`, `TARGET=main` w `.env`, potem
-   `reviewer/02release_tag.sh`. Skrypt sprawdza czyste drzewo, zgodność z `origin`, format `v*`
+   `owner/01release_tag.sh`. Skrypt sprawdza czyste drzewo, zgodność z `origin`, format `v*`
    i unikalność taga, a następnie tworzy tag z adnotacją i wysyła go do Forgejo.
 4. Wysłanie taga `v*` uruchamia workflow w Forgejo (`.forgejo/workflows/…`), który:
    publikuje paczki w rejestrze Forgejo, a dla podprojektów otwartych eksportuje pliki
