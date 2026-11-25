@@ -1,4 +1,4 @@
-<!-- AI 2026-11-25: indeks materiałów wdrożenia w Fundacji Galicea (rozdział e-booka https://galwork.net/ebook/) -->
+<!-- 2026-11-25: indeks materiałów wdrożenia w Fundacji Galicea (rozdział e-booka https://galwork.net/ebook/) -->
 # Przykład wdrożenia: Fundacja Galicea
 
 Skrypty i konfiguracje, do których odwołuje się rozdział **„Przykład: wdrożenie Galwork

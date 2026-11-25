@@ -2,7 +2,7 @@
 
 wersja: 0.1.4
 
-<!-- AI 2026-11-25: odnośniki do publikacji, opis repozytorium i przykładowego wdrożenia -->
+<!-- 2026-11-25: odnośniki do publikacji, opis repozytorium i przykładowego wdrożenia -->
 **Strona projektu: [https://galwork.net](https://galwork.net/)**
 
 Publikacje o projekcie (repozytoria źródłowe tych publikacji nie są udostępnione na GitHubie):

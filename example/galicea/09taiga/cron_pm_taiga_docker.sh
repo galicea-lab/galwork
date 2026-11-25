@@ -1,5 +1,5 @@
 #!/bin/bash
-# AI 2026-11-25: wariant scripts/cron_pm_taiga.sh dla huba uruchomionego w docker compose
+# 2026-11-25: wariant scripts/cron_pm_taiga.sh dla huba uruchomionego w docker compose
 # (instancja galicea: /setup/galicea/galwork). Polecenia pm_taiga.py wykonuje kontener `hub`.
 #   */20 * * * *  /setup/galicea/cron_pm_taiga_docker.sh
 #   15 6 * * *    /setup/galicea/cron_pm_taiga_docker.sh --daily

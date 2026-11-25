@@ -1,5 +1,5 @@
 #!/bin/sh
-# AI 2026-11-25: konsola psql bazy huba (hasło z pliku poza repozytorium).
+# 2026-11-25: konsola psql bazy huba (hasło z pliku poza repozytorium).
 DB_HOST="${DB_HOST:-<host-bazy>}"
 DB_PORT="${DB_PORT:-25060}"
 DB_NAME="${DB_NAME:-galicea}"

@@ -10,7 +10,7 @@ name: galwork
 
 services:
   hub:
-    image: registry.galicea.org/galwork-hub:0002
+    image: registry.galicea.org/galwork-hub:0012
     env_file: .env
     ports:
       - "${HUB_PORT:-8000}:8000"
@@ -23,7 +23,7 @@ services:
     restart: unless-stopped
 
   arena:
-    image: registry.galicea.org/galwork-arena:0004
+    image: registry.galicea.org/galwork-arena:0010
     environment:
       HUB_UPSTREAM: ${HUB_UPSTREAM:-http://hub:8000}
     ports:

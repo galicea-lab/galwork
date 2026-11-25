@@ -1,4 +1,4 @@
-; AI 2026-11-25: konfiguracja testowego klienta KSeF 2.0 (ksef2.py z auth-sdk)
+; 2026-11-25: konfiguracja testowego klienta KSeF 2.0 (ksef2.py z auth-sdk)
 [ksef2]
 cert_pfx=galicea_sign.pfx
 cert_pass=<hasło do pliku PFX>

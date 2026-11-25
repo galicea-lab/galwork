@@ -1,5 +1,5 @@
 #!/bin/sh
-# AI 2026-11-25: założenie bazy i użytkownika huba dla instancji (PostgreSQL >= 13, np. DigitalOcean).
+# 2026-11-25: założenie bazy i użytkownika huba dla instancji (PostgreSQL >= 13, np. DigitalOcean).
 # Hasła czytane z plików poza repozytorium. Skrypt wypisuje polecenia SQL i otwiera psql administratora.
 DB_HOST="${DB_HOST:-<host-bazy>}"
 DB_PORT="${DB_PORT:-25060}"

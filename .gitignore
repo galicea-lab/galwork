@@ -1,7 +1,7 @@
 # Lokalna konfiguracja i sekrety - nigdy w repozytorium.
 .env
 repos/.env*
-# AI 2026-11-25: szablon zmiennych skryptów repos/ - publikowany
+# 2026-11-25: szablon zmiennych skryptów repos/ - publikowany
 !repos/.env-example
 secrets/npmrc
 # sekrety usługi pieczęci (hasła Valkey, PIN-y SoftHSM2, ACL, łańcuch)

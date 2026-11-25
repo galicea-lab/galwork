@@ -1,5 +1,5 @@
 #!/bin/bash
-# AI 2026-11-25: katalog definicji obiegów (BPMN + formularze) montowany do huba
+# 2026-11-25: katalog definicji obiegów (BPMN + formularze) montowany do huba
 # (SPIFFWORKFLOW_DIR w .env). Źródło: galwork-hub/spiffworkflow albo galwork-models.
 # Użycie (z katalogu example/): ./setup1.sh [katalog_źródłowy] [katalog_docelowy]
 set -euo pipefail

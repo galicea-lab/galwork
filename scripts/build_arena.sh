@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # NEXT_PUBLIC_* są wklejane do statycznego bundla w czasie
 # `next build`, więc muszą trafić do builda jako --build-arg (wartości z .env).
-# Użycie: scripts/build_arena.sh [tag]   (domyślnie 0009)
+# Użycie: scripts/build_arena.sh [tag]   (domyślnie 0010)
 # .env czytany z galwork/, kontekst builda = katalog roboczy (..), bo
 # obraz potrzebuje też galwork-react/ (zob. ../.dockerignore).
 
@@ -16,7 +16,7 @@ cd "$(dirname "$0")/../.."
 #yarn build
 #cd ..
 
-TAG="${1:-0009}"
+TAG="${1:-0010}"
 IMAGE="registry.galicea.org/galwork-arena:${TAG}"
 
 env_value() {

@@ -1,4 +1,4 @@
-# AI 2026-11-06: przykładowa konfiguracja galwork-seal (bez sekretów).
+# 2026-11-06: przykładowa konfiguracja galwork-seal (bez sekretów).
 # Sekrety: pliki *_file (sekrety Dockera w /run/secrets) albo zmienne
 # SEAL_VALKEY_PASSWORD(_FILE), SEAL_PKCS11_PIN(_FILE).
 
@@ -29,6 +29,6 @@ key_label = "pieczec"
 # łańcuch PEM: certyfikat pieczęci, potem pośrednie
 certificate = "/etc/galwork-seal/chain.pem"
 # procesy (źródła zleceń), które mogą używać tej pieczęci
-# AI 2026-11-17: "regulacje" - pieczęć aktów w obiegach regulacji galwork-hub
+# 2026-11-17: "regulacje" - pieczęć aktów w obiegach regulacji galwork-hub
 sources = ["edu-pismo", "regulacje"]
 hashalgos = ["sha256"]

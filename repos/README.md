@@ -17,7 +17,7 @@ katalogu, a z argumentem przyjmują ścieżkę do pliku `.env`. Wzór zmiennych:
 (skopiuj do katalogu repozytorium jako `.env`; `DIR` jest liczone względem katalogu pliku `.env`).
 Plików `.env` i `TOKENY` nie wolno commitować.
 
-<!-- AI 2026-11-25: podsumowanie zasad według ról, gałąź a tag -->
+<!-- 2026-11-25: podsumowanie zasad według ról, gałąź a tag -->
 ## Gałąź a tag
 
 | | **gałąź (branch)** | **tag** |
@@ -49,6 +49,13 @@ Zasady operowania przez git:
   wyłącznie przez workflow wydania jako jeden commit na wersję, bez historii roboczej.
   Wyjątek: samo repozytorium `galwork` (informacje o projekcie, nie kod) jest publikowane
   bezpośrednio przez remote `github`.
+
+**UWAGA**
+Wyjątkiem jest obecne repozytorium (`galwork` - główne repozytorium projektu).
+Ponieważ jest to informacja o systemie (a nie rozwijany kod) - traktujemy go jako  rzadziej zmieniany zasób aktualizowany równocześnie na forgejo i github (mirror).
+
+W przyszłości pewnie (jeśli zajdzie taka potrzeba) to się zmieni.
+Na razie to repozytorium jest aktualizowane przez `ownera` i nie ma ustalonej licencji ani zasad kontrybucji.
 
 ## Role
 

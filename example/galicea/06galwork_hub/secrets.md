@@ -1,4 +1,4 @@
-<!-- AI 2026-11-25: lista sekretów wdrożenia huba i pieczęci - same nazwy, bez wartości -->
+<!-- 2026-11-25: lista sekretów wdrożenia huba i pieczęci - same nazwy, bez wartości -->
 # Sekrety wdrożenia (`secrets/`, poza repozytorium)
 
 | plik | zawartość | właściciel / prawa |

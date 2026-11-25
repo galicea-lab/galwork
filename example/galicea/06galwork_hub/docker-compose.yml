@@ -10,7 +10,7 @@ services:
       - ${SPIFFWORKFLOW_DIR:?ustaw SPIFFWORKFLOW_DIR w .env}:/app/spiffworkflow:ro
       # sekrety huba (m.in. certyfikaty e-Doręczeń: secret/edr/*.pem, zob. EDR_KEY/EDR_CERT w .env)
       - ./secrets/hub:/app/secret:ro
-      # AI 2026-11-25: przy włączonej pieczęci hub potrzebuje swojego hasła do Valkey usługi pieczęci
+      # 2026-11-25: przy włączonej pieczęci hub potrzebuje swojego hasła do Valkey usługi pieczęci
       # (SEAL_PASSWORD_FILE w .env); wystarczy położyć plik w secrets/hub/seal/valkey_hub_password
       # albo zamontować go osobno:
       # - ./secrets/seal/valkey_hub_password:/app/secret/seal/valkey_hub_password:ro

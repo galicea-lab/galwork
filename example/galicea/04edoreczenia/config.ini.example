@@ -1,4 +1,4 @@
-; AI 2026-11-25: konfiguracja testu skrzynki e-Doręczeń (biblioteka auth-sdk, zob. README.md)
+; 2026-11-25: konfiguracja testu skrzynki e-Doręczeń (biblioteka auth-sdk, zob. README.md)
 [logging]
 level=DEBUG
 file=edr.log

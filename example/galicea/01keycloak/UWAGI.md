@@ -1,4 +1,4 @@
-<!-- AI 2026-11-25: uwagi z wdrożenia Keycloak (uwaga.txt, users.txt) -->
+<!-- 2026-11-25: uwagi z wdrożenia Keycloak (uwaga.txt, users.txt) -->
 # Keycloak – uwagi z wdrożenia (realm `galicea`)
 
 ## Klient `galwork` (fronty Next.js)
@@ -24,7 +24,7 @@ Na produkcji wpisz jawnie adresy frontów (centrum, akademia, pm, arena), np. `h
 
 ## Ochrona przed zgadywaniem haseł
 
-<!-- AI 2026-11-25: włączenie brute force detection (TODO_bezpieczenstwo 2.2) -->
+<!-- 2026-11-25: włączenie brute force detection (TODO_bezpieczenstwo 2.2) -->
 Eksport realmu ma `bruteForceProtected: true`, blokadę **tymczasową** (`permanentLockout: false`)
 po 10 nieudanych próbach (`failureFactor`), czas blokady rosnący o 60 s, maksymalnie 15 min.
 Blokada trwała pozwoliłaby każdemu celowo zablokować cudze konto.
