@@ -1,0 +1,34 @@
+# AI 2026-11-06: przykładowa konfiguracja galwork-seal (bez sekretów).
+# Sekrety: pliki *_file (sekrety Dockera w /run/secrets) albo zmienne
+# SEAL_VALKEY_PASSWORD(_FILE), SEAL_PKCS11_PIN(_FILE).
+
+[valkey]
+url = "valkey://seal-valkey:6379/0"
+username = "seal"
+password_file = "/run/secrets/seal_valkey_password"
+
+[service]
+consumer_group = "galwork-seal"
+# czas oczekiwania XREADGROUP (ms) i życia odpowiedzi (s)
+block_ms = 5000
+reply_ttl = 120
+# zlecenie bez potwierdzenia dłużej niż tyle ms przejmuje inna instancja
+claim_idle_ms = 60000
+max_requests_per_minute = 120
+audit_maxlen = 100000
+
+[pkcs11]
+module = "/usr/lib/softhsm/libsofthsm2.so"
+token_label = "galwork-seal"
+pin_file = "/run/secrets/seal_pkcs11_pin"
+
+# Jeden klucz = jedna pieczęć. keyid podaje zlecający (RemoteSeal).
+[keys.pieczec]
+backend = "pkcs11"
+key_label = "pieczec"
+# łańcuch PEM: certyfikat pieczęci, potem pośrednie
+certificate = "/etc/galwork-seal/chain.pem"
+# procesy (źródła zleceń), które mogą używać tej pieczęci
+# AI 2026-11-17: "regulacje" - pieczęć aktów w obiegach regulacji galwork-hub
+sources = ["edu-pismo", "regulacje"]
+hashalgos = ["sha256"]

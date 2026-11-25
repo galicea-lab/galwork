@@ -1,0 +1,39 @@
+---
+repo_root: "{{ (playbook_dir ~ '/../../..') | realpath }}"
+env_dir: "{{ (playbook_dir ~ '/..') | realpath }}"
+artifacts_dir: "{{ playbook_dir }}/artifacts"
+artifacts_remote_dir: /var/www/galicea/artifacts
+releases_dir: /var/www/galicea/releases
+keep_releases: 5
+install_dependencies: true
+install_nginx: false
+manage_nginx: false
+ansible_ssh_private_key_file: "{{ lookup('env', 'HOME') }}/.ssh/galwork_deploy"
+
+apps:
+  - name: pm
+    source_dir: galwork-pm
+    env_file: pm.env.production
+    build_dir: "{{ repo_root }}/galwork-pm/.next/standalone"
+    target_dir: /var/www/galicea/pm
+    kind: node
+    service_name: galwork-pm
+    domain: pm.galicea.org
+    port: 3000
+  - name: edu
+    source_dir: galwork-edu
+    env_file: edu.env.production
+    build_dir: "{{ repo_root }}/galwork-edu/out"
+    target_dir: /var/www/galicea/akademia
+    kind: static
+    domain: akademia.galicea.org
+  - name: dashboard
+    source_dir: galwork-dashboard
+    env_file: dashboard.env.production
+    build_dir: "{{ repo_root }}/galwork-dashboard/out"
+    target_dir: /var/www/galicea/centrum
+    kind: static
+    domain: centrum.galicea.org
+
+pm_app: "{{ apps | selectattr('kind', 'equalto', 'node') | first }}"
+static_apps: "{{ apps | rejectattr('kind', 'equalto', 'node') | list }}"

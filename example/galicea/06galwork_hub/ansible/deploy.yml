@@ -1,0 +1,150 @@
+---
+# Wdrożenie huba (docker compose) - zastępuje ręczne kopiowanie do
+# /setup/galicea i uruchamianie deploy.sh na serwerze.
+#
+#   ansible-playbook deploy.yml -K            # kopiowanie + pull + up -d
+#   ansible-playbook deploy.yml -K --check --diff
+#   ansible-playbook deploy.yml -K --tags sync   # tylko kopiowanie plików
+- name: Wdrożenie galwork-hub
+  hosts: galwork
+  become: true
+  gather_facts: false
+  vars:
+    ansible_ssh_private_key_file: "{{ lookup('env', 'HOME') }}/.ssh/galwork_deploy"
+    local_dir: "{{ (playbook_dir ~ '/../galwork') | realpath }}"
+    remote_dir: /setup/galicea/galwork
+    # właściciel plików na serwerze; uid 1000 = użytkownik `galwork` w kontenerze huba
+    files_owner: "1000"
+    files_group: "1000"
+  tasks:
+    - name: Katalog docelowy
+      ansible.builtin.file:
+        path: "{{ remote_dir }}"
+        state: directory
+        owner: "{{ files_owner }}"
+        group: "{{ files_group }}"
+        mode: "0755"
+      tags: [sync]
+
+    - name: docker-compose.yml i deploy/
+      ansible.builtin.copy:
+        src: "{{ local_dir }}/{{ item }}"
+        dest: "{{ remote_dir }}/"
+        owner: "{{ files_owner }}"
+        group: "{{ files_group }}"
+        mode: preserve
+      loop:
+        - docker-compose.yml
+        - deploy
+      notify: compose up
+      tags: [sync]
+
+    - name: .env
+      ansible.builtin.copy:
+        src: "{{ local_dir }}/.env"
+        dest: "{{ remote_dir }}/.env"
+        owner: "{{ files_owner }}"
+        group: "{{ files_group }}"
+        mode: "0600"
+      notify: compose up
+      tags: [sync]
+
+    # uprawnienia jak lokalnie (np. secrets/hub/edr/*.pem = 0400)
+    - name: secrets/
+      ansible.builtin.copy:
+        src: "{{ local_dir }}/secrets"
+        dest: "{{ remote_dir }}/"
+        owner: "{{ files_owner }}"
+        group: "{{ files_group }}"
+        mode: preserve
+      notify: compose up
+      tags: [sync]
+
+    - name: docker compose pull
+      ansible.builtin.command:
+        cmd: docker compose pull
+        chdir: "{{ remote_dir }}"
+      register: compose_pull
+      changed_when: "'Downloaded newer image' in compose_pull.stderr or 'Pulled' in compose_pull.stderr"
+      notify: compose up
+      tags: [up]
+
+  handlers:
+    - name: compose up
+      ansible.builtin.command:
+        cmd: docker compose up -d
+        chdir: "{{ remote_dir }}"
+
+# Dane startowe (zob. galicea/05baza/README.md). Tag `never` - NIE uruchamia
+# się przy zwykłym wdrożeniu, tylko jawnie:
+#   ansible-playbook deploy.yml -K --tags seed
+#   ansible-playbook deploy.yml -K --tags seed -e seed_dry_run=true
+# Wszystkie kroki są idempotentne. Osobny play, żeby wcześniejszy
+# `compose up` (handler) wykonał się przed seedami.
+- name: Dane startowe galwork-hub
+  hosts: galwork
+  become: true
+  gather_facts: false
+  tags: [never, seed]
+  vars:
+    ansible_ssh_private_key_file: "{{ lookup('env', 'HOME') }}/.ssh/galwork_deploy"
+    remote_dir: /setup/galicea/galwork
+    seed_dry_run: false
+    seed_sql_file: "{{ (playbook_dir ~ '/../../05baza/slowniki_startowe.sql') | realpath }}"
+    dry_run_arg: "{{ ['--dry-run'] if (seed_dry_run | bool) else [] }}"
+    # SQL wykonywany w kontenerze huba (psycopg + DATABASE_URL z .env) -
+    # na serwerze nie trzeba psql, hasło nie przechodzi przez ansible.
+    run_sql_py: |
+      import os, sys, psycopg
+      url = os.environ["DATABASE_URL"].replace("postgresql+psycopg://", "postgresql://", 1)
+      with psycopg.connect(url, autocommit=True) as conn:
+          cur = conn.execute(sys.stdin.read())
+          while True:
+              if cur.description:
+                  for row in cur.fetchall():
+                      print(*row, sep="\t")
+              if not cur.nextset():
+                  break
+  tasks:
+    - name: Migracje na head (alembic current)
+      ansible.builtin.command:
+        cmd: docker compose exec -T hub alembic current
+        chdir: "{{ remote_dir }}"
+      register: alembic_current
+      changed_when: false
+      failed_when: alembic_current.rc != 0 or '(head)' not in alembic_current.stdout
+
+    - name: Słowniki płaskie (seed_flat_dictionaries.py)
+      ansible.builtin.command:
+        argv: "{{ ['docker', 'compose', 'exec', '-T', 'hub', 'python3', 'scripts/seed_flat_dictionaries.py'] + dry_run_arg }}"
+        chdir: "{{ remote_dir }}"
+      register: seed_flat
+      changed_when: not (seed_dry_run | bool)
+
+    - name: Zakupy (seed_zakupy.py)
+      ansible.builtin.command:
+        argv: [docker, compose, exec, -T, hub, python3, scripts/seed_zakupy.py]
+        chdir: "{{ remote_dir }}"
+      register: seed_zakupy
+      when: not (seed_dry_run | bool)
+
+    - name: Słowniki ogólne (05baza/slowniki_startowe.sql)
+      ansible.builtin.command:
+        argv: [docker, compose, exec, -T, hub, python3, -c, "{{ run_sql_py }}"]
+        chdir: "{{ remote_dir }}"
+        stdin: "{{ lookup('ansible.builtin.file', seed_sql_file) }}"
+      register: seed_sql
+      when: not (seed_dry_run | bool)
+
+    - name: Model procesu edr-korespondencja (seed_edr_process.py)
+      ansible.builtin.command:
+        argv: "{{ ['docker', 'compose', 'exec', '-T', 'hub', 'python3', 'scripts/seed_edr_process.py'] + dry_run_arg }}"
+        chdir: "{{ remote_dir }}"
+      register: seed_edr
+      changed_when: not (seed_dry_run | bool)
+
+    - name: Raport
+      ansible.builtin.debug:
+        msg: "{{ [seed_flat, seed_zakupy, seed_sql, seed_edr]
+                 | selectattr('stdout_lines', 'defined')
+                 | map(attribute='stdout_lines') | flatten }}"

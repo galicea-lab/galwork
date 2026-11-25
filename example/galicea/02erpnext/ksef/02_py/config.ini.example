@@ -1,0 +1,7 @@
+; AI 2026-11-25: konfiguracja testowego klienta KSeF 2.0 (ksef2.py z auth-sdk)
+[ksef2]
+cert_pfx=galicea_sign.pfx
+cert_pass=<hasło do pliku PFX>
+api_url=https://api.ksef.mf.gov.pl
+nip=<NIP>
+test_api_url=https://api-test.ksef.mf.gov.pl

@@ -1,0 +1,11 @@
+act_editor
+dziekanat
+galwork-admin
+iod
+it
+kandydaci
+kandydat
+student
+wf-admin
+wykladowca
+

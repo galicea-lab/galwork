@@ -1,0 +1,44 @@
+---
+- name: Powrót do poprzedniego wydania galwork
+  hosts: galwork
+  become: true
+  gather_facts: false
+  vars_files:
+    - group_vars/galwork.yml
+  tasks:
+    - name: Odczyt poprzedniego wydania
+      ansible.builtin.stat:
+        path: "/var/www/galicea/{{ item.name }}-previous"
+        follow: false
+      register: previous_stat
+      loop: "{{ apps }}"
+      loop_control:
+        label: "{{ item.name }}"
+
+    - name: Sprawdzenie czy poprzednie wydanie istnieje
+      ansible.builtin.fail:
+        msg: "Brak poprzedniego wydania dla {{ item.item.name }}"
+      loop: "{{ previous_stat.results }}"
+      when: not (item.stat.islnk | default(false) | bool)
+
+    - name: Przełączenie katalogów na poprzednie wydanie
+      ansible.builtin.file:
+        src: "{{ previous_stat.results[app_idx].stat.lnk_source }}"
+        dest: "{{ item.target_dir }}"
+        state: link
+        force: true
+      loop: "{{ apps }}"
+      loop_control:
+        index_var: app_idx
+        label: "{{ item.name }}"
+
+    - name: Restart PM
+      ansible.builtin.systemd_service:
+        name: "{{ pm_app.service_name }}"
+        state: restarted
+
+    - name: Przeładowanie nginx
+      ansible.builtin.service:
+        name: nginx
+        state: reloaded
+      when: manage_nginx | bool

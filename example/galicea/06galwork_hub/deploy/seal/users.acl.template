@@ -1,0 +1,3 @@
+user default off
+user seal on #@SEAL_SHA256@ resetkeys ~seal:requests ~seal:reply:* ~seal:cert:* ~seal:audit resetchannels -@all +ping +hello +xgroup|create +xreadgroup +xautoclaim +xack +xdel +xadd +lpush +expire +set
+user hub on #@HUB_SHA256@ resetkeys %W~seal:requests %RW~seal:reply:* %R~seal:cert:* resetchannels -@all +ping +hello +xadd +blpop +get

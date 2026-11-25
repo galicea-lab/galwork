@@ -1,0 +1,209 @@
+services:
+  broker:
+    image: docker.io/valkey/valkey:9-alpine
+    container_name: paperless-broker
+    restart: unless-stopped
+    volumes:
+      - redisdata:/data
+
+  webserver:
+    image: ghcr.io/paperless-ngx/paperless-ngx:latest
+    container_name: paperless-webserver
+    restart: unless-stopped
+    depends_on:
+      - broker
+    ports:
+      - "8050:8000"
+    volumes:
+      - paperless_data:/usr/src/paperless/data
+      - paperless_media:/usr/src/paperless/media
+      - ./consume:/usr/src/paperless/consume
+      - ./export:/usr/src/paperless/export
+    env_file:
+      # Wczytuje zmienne z .env – brak pliku NIE przerywa startu
+      - path: .env
+        required: false
+    environment:
+      # --- Baza danych: wartości opcjonalne ---
+      # Składnia ${ZMIENNA:-} oznacza: użyj wartości ze środowiska,
+      # a jeśli jest pusta/nieustawiona – pozostaw pustą (Paperless użyje domyślnej).
+      PAPERLESS_DBENGINE: postgresql
+      PAPERLESS_DBHOST: ${PAPERLESS_DBHOST:-}
+      PAPERLESS_DBPORT: ${PAPERLESS_DBPORT:-}
+      PAPERLESS_DBNAME: ${PAPERLESS_DBNAME:-}
+      PAPERLESS_DBUSER: ${PAPERLESS_DBUSER:-}
+      PAPERLESS_DBPASS: ${PAPERLESS_DBPASS:-}
+      PAPERLESS_DBSSLMODE: ${PAPERLESS_DBSSLMODE:-}
+      
+      PAPERLESS_USE_X_FORWARDED_HOST: true
+      PAPERLESS_USE_X_FORWARDED_PORT: true
+      PAPERLESS_ALLOWED_HOSTS: docs.transmem.pl
+      PAPERLESS_CSRF_TRUSTED_ORIGINS: https://docs.transmem.pl
+
+      # --- Redis ---
+      PAPERLESS_REDIS: ${PAPERLESS_REDIS:-redis://broker:6379}
+
+      # --- Aplikacja ---
+      PAPERLESS_SECRET_KEY: ${PAPERLESS_SECRET_KEY:?PAPERLESS_SECRET_KEY jest wymagany}
+      PAPERLESS_URL: ${PAPERLESS_URL:-}
+      PAPERLESS_TIME_ZONE: ${PAPERLESS_TIME_ZONE:-Europe/Warsaw}
+
+      # Obejście problemu z uprawnieniami do certyfikatów SSL w 2.15+
+      HOME: /usr/src/paperless
+
+      # Aktywacja modułu OIDC w Paperless-ngx
+      PAPERLESS_APPS: allauth.socialaccount.providers.openid_connect
+
+      # Konfiguracja dostawcy Keycloak
+      PAPERLESS_SOCIALACCOUNT_PROVIDERS: >
+        {
+          "openid_connect": {
+            "APPS": [
+              {
+                "provider_id": "keycloak",
+                "name": "Keycloak",
+                "client_id": "${KEYCLOAK_CLIENT_ID:?KEYCLOAK_CLIENT_ID jest wymagany}",
+                "secret": "${KEYCLOAK_CLIENT_SECRET:?KEYCLOAK_CLIENT_SECRET jest wymagany}",
+                "settings": {
+                  "server_url": "${KEYCLOAK_URL:?KEYCLOAK_URL jest wymagany}/realms/${KEYCLOAK_REALM:?KEYCLOAK_REALM jest wymagany}/.well-known/openid-configuration"
+                }
+              }
+            ]
+          }
+        }
+
+  # proces roboczy zadań
+  consumer:
+    image: ghcr.io/paperless-ngx/paperless-ngx:latest
+    container_name: paperless-consumer
+    restart: unless-stopped
+    depends_on:
+      - broker
+    volumes:
+      - paperless_data:/usr/src/paperless/data
+      - paperless_media:/usr/src/paperless/media
+      - ./consume:/usr/src/paperless/consume
+      - ./export:/usr/src/paperless/export
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      # Zmienne środowiskowe muszą być identyczne jak w webserver
+      # W przeciwnym razie proces wykonawczy nie będzie mógł połączyć się z Redis ani bazą danych
+      # kopia z webserver:
+      PAPERLESS_DBENGINE: postgresql
+      PAPERLESS_DBHOST: ${PAPERLESS_DBHOST:-}
+      PAPERLESS_DBPORT: ${PAPERLESS_DBPORT:-}
+      PAPERLESS_DBNAME: ${PAPERLESS_DBNAME:-}
+      PAPERLESS_DBUSER: ${PAPERLESS_DBUSER:-}
+      PAPERLESS_DBPASS: ${PAPERLESS_DBPASS:-}
+      PAPERLESS_DBSSLMODE: ${PAPERLESS_DBSSLMODE:-}
+      
+      PAPERLESS_USE_X_FORWARDED_HOST: true
+      PAPERLESS_USE_X_FORWARDED_PORT: true
+      PAPERLESS_ALLOWED_HOSTS: docs.transmem.pl
+      PAPERLESS_CSRF_TRUSTED_ORIGINS: https://docs.transmem.pl
+
+      # --- Redis ---
+      PAPERLESS_REDIS: ${PAPERLESS_REDIS:-redis://broker:6379}
+
+      # --- Aplikacja ---
+      PAPERLESS_SECRET_KEY: ${PAPERLESS_SECRET_KEY:?PAPERLESS_SECRET_KEY jest wymagany}
+      PAPERLESS_URL: ${PAPERLESS_URL:-}
+      PAPERLESS_TIME_ZONE: ${PAPERLESS_TIME_ZONE:-Europe/Warsaw}
+
+      # Obejście problemu z uprawnieniami do certyfikatów SSL w 2.15+
+      HOME: /usr/src/paperless
+
+      # Aktywacja modułu OIDC w Paperless-ngx
+      PAPERLESS_APPS: allauth.socialaccount.providers.openid_connect
+
+      # Konfiguracja dostawcy Keycloak
+      PAPERLESS_SOCIALACCOUNT_PROVIDERS: >
+        {
+          "openid_connect": {
+            "APPS": [
+              {
+                "provider_id": "keycloak",
+                "name": "Keycloak",
+                "client_id": "${KEYCLOAK_CLIENT_ID:?KEYCLOAK_CLIENT_ID jest wymagany}",
+                "secret": "${KEYCLOAK_CLIENT_SECRET:?KEYCLOAK_CLIENT_SECRET jest wymagany}",
+                "settings": {
+                  "server_url": "${KEYCLOAK_URL:?KEYCLOAK_URL jest wymagany}/realms/${KEYCLOAK_REALM:?KEYCLOAK_REALM jest wymagany}/.well-known/openid-configuration"
+                }
+              }
+            ]
+          }
+        }
+      ##
+    # Jawnie określone polecenie uruchomienia, aby poinformować kontener, że działa jako proces roboczy
+    command: ["celery", "--app", "paperless", "worker", "--loglevel", "INFO"]
+
+  beat:
+    image: ghcr.io/paperless-ngx/paperless-ngx:latest
+    container_name: paperless-beat
+    restart: unless-stopped
+    depends_on:
+      - broker
+    volumes:
+      - paperless_data:/usr/src/paperless/data
+      - paperless_media:/usr/src/paperless/media
+      - ./consume:/usr/src/paperless/consume
+      - ./export:/usr/src/paperless/export
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      PAPERLESS_DBENGINE: postgresql
+      PAPERLESS_DBHOST: ${PAPERLESS_DBHOST:-}
+      PAPERLESS_DBPORT: ${PAPERLESS_DBPORT:-}
+      PAPERLESS_DBNAME: ${PAPERLESS_DBNAME:-}
+      PAPERLESS_DBUSER: ${PAPERLESS_DBUSER:-}
+      PAPERLESS_DBPASS: ${PAPERLESS_DBPASS:-}
+      PAPERLESS_DBSSLMODE: ${PAPERLESS_DBSSLMODE:-}
+      
+      PAPERLESS_USE_X_FORWARDED_HOST: true
+      PAPERLESS_USE_X_FORWARDED_PORT: true
+      PAPERLESS_ALLOWED_HOSTS: docs.transmem.pl
+      PAPERLESS_CSRF_TRUSTED_ORIGINS: https://docs.transmem.pl
+
+      # --- Redis ---
+      PAPERLESS_REDIS: ${PAPERLESS_REDIS:-redis://broker:6379}
+
+      # --- Aplikacja ---
+      PAPERLESS_SECRET_KEY: ${PAPERLESS_SECRET_KEY:?PAPERLESS_SECRET_KEY jest wymagany}
+      PAPERLESS_URL: ${PAPERLESS_URL:-}
+      PAPERLESS_TIME_ZONE: ${PAPERLESS_TIME_ZONE:-Europe/Warsaw}
+
+      # Obejście problemu z uprawnieniami do certyfikatów SSL w 2.15+
+      HOME: /usr/src/paperless
+
+      # Aktywacja modułu OIDC w Paperless-ngx
+      PAPERLESS_APPS: allauth.socialaccount.providers.openid_connect
+
+      # Konfiguracja dostawcy Keycloak
+      PAPERLESS_SOCIALACCOUNT_PROVIDERS: >
+        {
+          "openid_connect": {
+            "APPS": [
+              {
+                "provider_id": "keycloak",
+                "name": "Keycloak",
+                "client_id": "${KEYCLOAK_CLIENT_ID:?KEYCLOAK_CLIENT_ID jest wymagany}",
+                "secret": "${KEYCLOAK_CLIENT_SECRET:?KEYCLOAK_CLIENT_SECRET jest wymagany}",
+                "settings": {
+                  "server_url": "${KEYCLOAK_URL:?KEYCLOAK_URL jest wymagany}/realms/${KEYCLOAK_REALM:?KEYCLOAK_REALM jest wymagany}/.well-known/openid-configuration"
+                }
+              }
+            ]
+          }
+        }
+    # Jawnie określone polecenie uruchomienia, aby poinformować kontener, że działa jako proces roboczy
+    command: ["celery", "--app", "paperless", "beat", "--loglevel", "INFO"]
+
+
+volumes:
+  redisdata:
+  paperless_data:
+  paperless_media:
+

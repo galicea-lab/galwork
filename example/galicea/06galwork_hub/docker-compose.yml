@@ -1,0 +1,73 @@
+name: galwork_galicea
+
+services:
+  hub:
+    image: registry.galicea.org/galwork-hub:0011
+    env_file: .env
+    ports:
+      - "${HUB_PORT:-8000}:8000"
+    volumes:
+      - ${SPIFFWORKFLOW_DIR:?ustaw SPIFFWORKFLOW_DIR w .env}:/app/spiffworkflow:ro
+      # sekrety huba (m.in. certyfikaty e-Doręczeń: secret/edr/*.pem, zob. EDR_KEY/EDR_CERT w .env)
+      - ./secrets/hub:/app/secret:ro
+      # AI 2026-11-25: przy włączonej pieczęci hub potrzebuje swojego hasła do Valkey usługi pieczęci
+      # (SEAL_PASSWORD_FILE w .env); wystarczy położyć plik w secrets/hub/seal/valkey_hub_password
+      # albo zamontować go osobno:
+      # - ./secrets/seal/valkey_hub_password:/app/secret/seal/valkey_hub_password:ro
+    restart: unless-stopped
+
+  arena:
+    image: registry.galicea.org/galwork-arena:0009
+    environment:
+      HUB_UPSTREAM: ${HUB_UPSTREAM:-http://hub:8000}
+    ports:
+      - "${ARENA_PORT:-8081}:80"
+    depends_on:
+      - hub
+    restart: unless-stopped
+
+  seal-valkey:
+    image: valkey/valkey:8.1.1-alpine
+    command: ["valkey-server", "/etc/valkey/valkey.conf"]
+    volumes:
+      - ${SEAL_DIR:-../galwork-seal}/deploy/valkey/valkey.conf:/etc/valkey/valkey.conf:ro
+      - ./secrets/seal/users.acl:/etc/valkey/users.acl:ro
+      - seal-valkey-data:/data
+    restart: unless-stopped
+
+  galwork-seal:
+    build:
+      context: ${SEAL_DIR:-../galwork-seal}
+      dockerfile: deploy/Dockerfile
+    image: registry.galicea.org/galwork-seal:${SEAL_TAG:-dev}
+    environment:
+      SEAL_CONFIG: /etc/galwork-seal/seal.toml
+      SEAL_VALKEY_PASSWORD_FILE: /run/secrets/seal_valkey_password
+      SEAL_PKCS11_PIN_FILE: /run/secrets/seal_pkcs11_pin
+    secrets:
+      - seal_valkey_password
+      - seal_pkcs11_pin
+    volumes:
+      - ./deploy/seal/seal.toml:/etc/galwork-seal/seal.toml:ro
+      - ./secrets/seal/chain.pem:/etc/galwork-seal/chain.pem:ro
+      - seal-tokens:/var/lib/softhsm/tokens
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    depends_on:
+      - seal-valkey
+    restart: unless-stopped
+
+secrets:
+  seal_valkey_password:
+    file: ./secrets/seal/valkey_seal_password
+  seal_pkcs11_pin:
+    file: ./secrets/seal/seal_pkcs11_pin
+
+volumes:
+  seal-valkey-data:
+  seal-tokens:

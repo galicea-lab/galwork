@@ -1,0 +1,9 @@
+server {
+    listen 80;
+    server_name {{ item.domain }};
+    root {{ item.target_dir }};
+
+    location / {
+        try_files $uri $uri.html $uri/ =404;
+    }
+}

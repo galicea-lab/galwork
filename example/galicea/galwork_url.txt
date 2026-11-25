@@ -1,0 +1,20 @@
+1. Nowe domeny / strony:
+centrum.galicea.org  - dashboard
+galwork.galicea.org  - hub
+arena.galicea.org    - arena
+pm.galicea.org       - pm
+akademia.galicea.org - edu
+
+2. Utrzymywane usługi
+code.galicea.org - forgejo
+taiga.galicea.org - zarządzanie projektami Taiga
+czat.galicea.org - komunikator Mattermost
+
+3. Integrowane usługi zewnętrzne
+edoreczenia.gov.pl  - eDoręczenia
+ksef.podatki.gov.pl - KSef
+galicea.transmem.pl - ErpNext 
+docs.transmem.pl    - Paperless-ngx
+
+UWAGA! Potrzebna umowa o powierzeniu przetwarzania danych osobowych przez Transmem
+

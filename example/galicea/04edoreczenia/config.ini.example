@@ -1,0 +1,12 @@
+; AI 2026-11-25: konfiguracja testu skrzynki e-Doręczeń (biblioteka auth-sdk, zob. README.md)
+[logging]
+level=DEBUG
+file=edr.log
+
+[edr]
+; adres do doręczeń elektronicznych (ADE) organizacji
+address=AE:PL-00000-00000-XXXXX-00
+key=secret/edr/edr_key.pem
+cert=secret/edr/edr_cert.pem
+system=GALWORK
+url=https://ow.edoreczenia.gov.pl

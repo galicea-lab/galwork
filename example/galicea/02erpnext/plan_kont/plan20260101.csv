@@ -1,0 +1,194 @@
+Numer konta,Nazwa konta,Typ konta,JPK Znacznik Konta,JPK Tag Podatkowy,JPK Pozycja Bilansu,JPK Pozycja RZiS
+,Przychody,,,,,
+700,Przychody ze sprzedaży,,7,,,
+700.001,Przychody ze sprzedaży usług,,7,P_P_D,,A.I
+700.001.02,Przychody ze sprzedaży usług - zagranica,,W_7,P_P_D,,A.I
+700.001.01,Przychody ze sprzedaży usług- kraj,,7,P_P_D,,A.I
+700.001.03,Sprzedaż usług  - pozostała,,W_7,P_P_D,,A.I
+700.002,Przychody z działalności gospodarczej,Indirect Income,W_4,,,
+700.002.01,Przychody z wydawnictwa,Direct Income,W_4,,,
+710,Pozostałe przychody ze sprzedaży,,W_7,P_P_D,,A.IV
+710.001,Przychody ze sprzedaży materiałów,,W_7,P_P_D,,A.IV
+750,Przychody finansowe,,W_7,,,
+750.001,Przychody ze sprzedaży aktywów finansowych,,W_7,P_P_D,,G.I
+751.01,Wartość sprzedanych inwestycji,,W_7,K_P_D,,H.I
+751.03,Odsetki,,W_7,,,H.I
+751.02,Odpisy z tytułu utraty wartości inwestycji-koszty,,W_7,K_N_P,,H.II
+751.03.1.2,Odsetki zapłacone,,W_7,,,G.III
+751.003.02.01,Odsetki zapłacone KUP,,W_7,K_P_D,,H.I
+751.003.02.02,Odsetki zapłacone NKUP,,W_7,,,
+751.003.01,Odsetki zarachowane,,W_7,K_N_P,,H.I
+751.003.01.02,Odsetki zapłacone,,W_7,,,G.III
+751.04,Ujemne różnice kursu walut,,W_7,,,H.IV
+751.004.01,Ujemne różnice kursu walut KUP,,W_7,K_P_D,,H.V
+751.004.02,Ujemne różnice kursu walut NKUP,,W_7,K_N_P,,H.IV
+751.05,Pozostałe koszty finansowe,,W_7,K_P_D,,H.IV
+750.003,Dodatnie różnice kursu walut,,W_7,P_P_D,,G.V
+750.004,Pozostałe przychody finansowe,,W_7,P_P_D,,G.V
+750.002,Odsetki otrzymane,Indirect Income,W_7,P_P_D,,G.II
+760,Przychody operacyjne,,W_7,,,
+760.001,Przychody ze zbycia niefinansowych aktywów trwałych,,W_7,P_P_D,,D.I
+760.002,Otrzymane dotacje i darowizny,,W_7,P_N_P,,D.II
+760.003,Przychody ze wzrostu wartości niefinansowych aktywów trwałych,,W_7,P_N_P,,D.III
+760.009,Inne pozostałe przychody operacyjne,,W_7,P_P_D,,D.IV
+760.010,Wynik na sprzedaży środków trwałych (techniczne),Direct Income,1,,,
+,Fundusze,,,,,
+800,Fundusze własne,,8,,,
+800.004,Kapitał z aktualizacji wyceny,,8,,A.III,
+800.003,Kapitał z aktualizacji wyceny,,8,,A.III,
+800.001,Fundusz statutowy,Equity,8,,,
+800.002,Kapitał zapasowy,Equity,8,,,
+820,Rozliczenia wyniku finansowego,,8,,A.V,
+820.001,Rozliczenia wyniku finansowego,,8,,,
+830,Utworzone rezerwy,,8,,,
+830.001,Rezerwa z tytułu odroczonego podatku dochodowego,,8,,B.I.3,
+840,Rozliczenie międzyokresowe przychodów,,8,,B.IV,
+840.001,Inne rozliczenia międzyokresowe długoterminowe,,8,,B.IV,
+830.002,Inne rozliczenia międzyokresowe krótkoterminowe,,8,,,
+860,Wynik finansowy,,8,,A.VI,
+860.001,Wynik finansowy,,8,,A.VI,
+,Koszty,,,,,
+870,Obciążenia wyniku finansowego,,W_7,,,
+500,Koszty działalności gospodarczej,,4,,,
+870.001,Podatek dochodowy od osób prawnych,,W_7,K_N_P,,L
+500.411,Zużycie materiałów i energii,,W_4,K_P_D,,B.II
+500.411.001,Zużycie materiałów biurowych,Expense Account,1,,,
+500.429,Usługi obce,,W_4,K_P_D,,B.II
+500.429.001,Usługi informatyczne,Expense Account,1,,,
+500.429.002,Usługi remontowe,Expense Account,1,,,
+500.429.003,Usługi bankowe,Expense Account,1,,,
+500.429.004,Pozostałe usługi obce,Expense Account,1,,,
+500.464,Podatki i opłaty,,W_4,K_P_D,,B.III
+500.464.001,Opłaty sądowe,Expense Account,1,,,
+500.464.002,Pozostałe opłaty,Expense Account,1,,,
+500.431,Wynagrodzenia,,W_4,K_P_D,,B.VI
+500.431.001,Wynagrodzenia osobowe,Expense Account,1,,,
+500.431.002,Wynagrodzenia bezosobowe,Expense Account,1,,,
+500.468,Pozostałe koszty rodzajowe,,W_4,,,B.VII
+500.468.002,Pozostałe koszty rodzajowe,,W_4,,,B.VII
+500.468.001,Ubezpieczenia majątkowe,Expense Account,1,,,
+500.441,Ubezpieczenia społeczne i inne świadczenia,,W_4,K_P_D,,B.VI
+500.441.001,Ubezpieczenia społeczne,Expense Account,1,,,
+500.441.002,Inne świadczenia na rzecz pracowników,Expense Account,1,,,
+500.401,Amortyzacja,,W_4,K_P_D,,B.I
+500.401.001,Amortyzacja środków trwałych,Expense Account,1,,,
+500.401.002,Amortyzacja środków wartości niematerialnych i prawnych,Expense Account,1,,,
+730,Koszt własny sprzedaży usług,,W_7,K_P_D,,B.I
+730.01,Koszt własny sprzedaży usług na kraj,,W_7,K_P_D,,B.I
+730.02,Koszt własny sprzedaży usług na eksport,,W_7,K_P_D,,B.I
+751,Koszty finansowe,,W_7,,,
+751.004,Ujemne różnice kursu walut,,W_7,,,H.IV
+761,Koszty operacyjne,,W_7,,,
+761.004,Pozostałe koszty operacyjne,,W_7,K_P_D,,E.IV
+761.004.01,Pozostałe koszty operacyjne - KUP,Expense Account,W_7,K_P_D,,
+761.004.02,Pozostałe koszty operacyjne NKUP,Expense Account,W_7,K_N_P,,
+761.002,Dotacje i darowizny przekazane NKUP,,W_7,K_N_P,,E.IV
+761.001,Wartość sprzedanych niefinansowych aktywów trwałych,,W_7,K_P_D,,E.I
+761.003,Odpisy z tytułu utraty wartości aktywów niefinansowych NKUP,,W_7,K_N_P,,E.II
+550,Koszty ogólnoadministracyjne,,1,,,
+550.401,Amortyzacja,,W_4,K_P_D,,B.I
+550.401.001,Amortyzacja środków trwałych,Expense Account,1,,,
+550.401.002,Amortyzacja środków wartości niematerialnych i prawnych,Expense Account,1,,,
+550.468,Pozostałe koszty rodzajowe,,1,,,
+550.468.009,Korekty i różnice inwentaryzacyjne,,W_4,K_P_D,,B.IX
+550.468.001,Ubezpieczenia majątkowe,Expense Account,1,,,
+550.468.002,Pozostałe koszty,Expense Account,1,,,
+550.411,Zużycie materiałów i energi,Expense Account,1,,,
+550.411.001,Zużycie materiałów biurowych,Expense Account,1,,,
+550.429,Usługi obce,Expense Account,1,,,
+550.429.001,Usługi informatyczne,Expense Account,1,,,
+550.429.002,Usługi remontowe,Expense Account,1,,,
+550.429.003,Usługi bankowe,Expense Account,1,,,
+550.429.004,Pozostałe usługi obce,Expense Account,1,,,
+550.431,Wynagrodzenia,Expense Account,1,,,
+550.431.001,Wynagrodzenia osobowe,Expense Account,1,,,
+550.431.002,Wynagrodzenia bezosobowe,Expense Account,1,,,
+550.441,Ubezpieczenia społeczne i inne,Expense Account,1,,,
+550.441.001,Ubezpieczenia społeczne,Expense Account,1,,,
+550.441.002,Inne świadczenia na rzecz pracowników,Expense Account,1,,,
+550.464,Podatki i opłaty,Expense Account,1,,,
+550.464.001,Opłaty sądowe,Expense Account,1,,,
+550.464.002,Pozostałe opłaty,Expense Account,1,,,
+510,Koszty działalności statutowej nieodpłatnej,,1,,,
+510.001,Konkursy,Expense Account,1,,,
+510.000,Konto działalności statutowej nieodpłatnej - usługi administracyjne,,1,,,
+510.000.03,Koszty działalności statutowej nieodpłatnej - usługi bankowe,Indirect Income,1,,,
+510.000.04,Koszty działalności statutowej nieodpłatnej - pozostałe usługi,Indirect Expense,1,,,
+520,Koszty działalności statutowej odpłatnej,,1,,,
+520.001,Koszty działalności statutowej odpłatnej,Expense Account,1,,,
+,Aktywa,,,,,
+10,Środki trwałe,,1,,,
+010.001,Grunty własne i prawa wieczystego użytkowania gruntów,,K_0_1,,A.I.1,
+010.003,Urządzenia techniczne i maszyny gr.3,,K_0_1,,A.I.1,
+010.004,Urządzenia techniczne i maszyny gr.4,,K_0_1,,A.I.1,
+010.007,Środki transportu,,K_0_1,,A.I.1,
+010.008,Inne środki trwałe,,K_0_1,,A.I.1,
+010.005,Urządzenia techniczne i maszyny gr.5,,K_0_1,,A.I.1,
+010.002,Budynki; lokale i obiekty inżynierii lądowej i wodnej,,1,,,
+20,Wartości niematerialne i prawne,,K_0_2,,,
+020.001,Koszty zakończonych prac rozwojowych,,K_0_2,,A.I.1,
+020.002,Nabyta wartość firmy,,K_0_2,,A.I.4,
+020.003,Inne Prawa Majątkowe,,K_0_2,,A.I.3,
+020.004,Inne wartości niematerialne i prawne,,K_0_2,,A.I.5,
+70,Umorzenie środków trwałych i wartości niematerialnych i prawnych,,1,,,
+070.001,Umorzenie środków trwałych,,K_0_1,,,
+070.001.01,Odpisy umorzeniowe wartości gruntów i prawa wieczystego użytkowania gruntów,,K_0_1,,,
+070.001.03,Odpisy umorzeniowe urządzeń technicznych i maszyn gr.3,,K_0_1,,,
+070.001.04,Odpisy umorzeniowe urządzeń technicznych i maszyn gr.4,,K_0_1,,,
+070.001.05,Odpisy umorzeniowe urządzeń technicznych i maszyn gr.5,,K_0_1,,,
+070.001.07,Odpisy umorzeniowe środków transportu,,K_0_1,,,
+070.001.08,Odpisy umorzeniowe innych środków trwałych,,K_0_1,,,
+070.002,Umorzenie wartości niematerialnych i prawnych,,K_0_2,,,
+070.002.01,Odpisy umorzeniowe zakończonych prac rozwojowych,,K_0_2,,,
+070.002.02,Odpisy umorzeniowe wartości firmy,,K_0_2,,,
+070.002.08,Odpisy umorzeniowe innych wartości niematerialnych i prawnych,,K_0_2,,,
+80,Środki trwałe w budowie,,K_0_1,,A.II,
+080.001,Zaliczki na środki trwałe w budowie,,K_0_1,,A.III,
+100,Środki pieniężne w kasie,Cash,K_1_1,,B.III.1.c,
+100.001,Kasa główna,Cash,K_1_1,,B.III.1.c,
+100.002,Kasa środków statutowych,,1,,,
+149,Środki pieniężne w drodze,,K_1_1,,B.III.1.c,
+149.001,Środki pieniężne w drodze,,K_1_1,,B.III.1.c,
+111,Środki pieniężne w bankach,Bank,K_1_1,,B.III.1.c,
+111.001,Rachunek bieżący,Bank,K_1_1,,B.III.1.c,
+111.002,Rachunek pomocniczy,Bank,K_1_1,,B.III.1.c,
+111.003,Bank - Konto VAT,Bank,K_1_1,,,
+200,Rozrachunki z odbiorcami,,2,,,
+200.001,Rozrachunki z odbiorcami,Receivable,K_2_1,,B.II.1.a,
+640,Rozliczenia międzyokresowe kosztów czynne,,2,,B.IV,
+640.001,Czynne rozliczenia międzyokresowe kosztów,,2,,B.IV,
+300,Rozliczenie zakupu,,3,,,
+300.006,Wartości dostaw niefakturowanych,Stock Received But Not Billed,3,,B.III.2.a,
+300.001,Rozliczenie zakupu - import usług,,3,,B.I.1,
+300.002,Rozliczenie zakupu towarów,,3,,B.I.4,
+300.003,Rozliczenie zakupu składników aktywów trwałych,,3,,B.I.1,
+11,Składniki majątku amortyzowane jednorazowo,,1,,,
+011.001,Niskocenne środki trwałe,,1,,,
+71,Umorzenie skłądników majątku amortyzoanego jednorazowo,,1,,,
+071.001,Unorzenie niskocennych środków trwałych,,1,,,
+72,Odpisy umorzeniowe  WNiP,,1,,,
+072.001,Odpisy umorzeniowe zakończonych prac rozwojowych,,1,,,
+,Pasywa,,,,,
+201,Rozrachunki z dostawcami,,2,,,
+201.002,Rozrachunki z dostawcami zagranicznymi,Payable,2,,B.III.1.a,
+201.001,Rozrachunki z dostawcami krajowymi,Payable,2,,B.III.1.a,
+221,Rozrachunki publicznoprawne,,2,,,
+221.001,Rozrachunki z urzędem skarbowym z tytułu VAT,,2,,B.III.2.c,
+221.002,Rozrachunki publicznoprawne z urzędem skarbowym- CIT,,2,,B.III.2.c,
+221.003,Rozrachunki publicznoprawne z urzędem skarbowym - PIT,,2,,B.III.2.c,
+221.004,Rozrachunki publicznoprawne z ZUS,,2,,B.III.2.c,
+220,Rozrachunki z tytułu VAT,,2,,,
+220.001,VAT należny,Tax,2,,B.III.2.c,
+220.002,VAT naliczony,,2,,B.II.2.b,
+231,Rozrachunki z tytułu wynagrodzeń,,2,,B.III.2.c,
+231.001,Rozrachunki z tytułu wynagrodzeń,,2,,B.III.2.c,
+231.002,Rozrachunki z tytułu umów,,2,,B.III.2.c,
+240,Pozostałe rozrachunki z pracownikami,,2,,,
+240.001,Pozostałe rozrachunki z pracownikami,,2,,B.III.2.c,
+650,Bierne rozliczenia międzyokresowe,,6,,B.IV,
+650.001,Aktywa z tytułu odroczonego podatku dochodowego,,2,,A.V,
+650.002,Inne rozliczenia międzyokresowe,,2,,B.IV,
+301,Rozliczenie zakupu - przeksięgowanie ujemnego salda z 300,,1,,,
+798,Zaokrąglenia i drobne kwoty,,1,,,
+798.001,Zaokrąglenia bieżące,Round Off,1,,,
+798.002,Zaokrąglenia na bilansie otwarcia,Round Off for Opening,1,,,

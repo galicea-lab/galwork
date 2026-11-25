@@ -1,0 +1,20 @@
+[Unit]
+Description=galwork-pm (Next.js standalone)
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory={{ pm_app.target_dir }}
+Environment=NODE_ENV=production
+Environment=PORT={{ pm_app.port }}
+Environment=HOSTNAME=127.0.0.1
+ExecStart={{ node_bin }} server.js
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

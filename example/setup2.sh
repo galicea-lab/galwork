@@ -1,4 +1,3 @@
-# Hasło do edytorów, konfiguracja nginx
-sudo htpasswd -c /etc/nginx/galwork-bpmn.htpasswd admin
-# pakiet apache2-utils
+# Konfiguracja nginx (edytory areny nie wymagają już osobnego hasła htpasswd -
+# dostęp do zapisu plików obiegów sprawdza hub: Keycloak + grupa administracyjna)
 #sudo cp galwork_arena.conf /etc/nginx/sites-available/ && sudo nginx -t && sudo systemctl reload nginx

@@ -1,0 +1,23 @@
+{
+  "_opis": "Dane startowe integracji Taiga - galwork-pm - ERPNext, wdrożenie produkcyjne Fundacji Galicea (Taiga taiga.galicea.org, ERPNext galicea.transmem.pl). Ładowanie: python3 scripts/pm_taiga.py seed <ten plik>. Sekrety NIE należą do tego pliku (config.ini huba / zmienne środowiskowe).",
+  "_data": "2026-11-21",
+  "_do_uzupelnienia": "erp_project: nazwa (name, np. PROJ-0001) projektu w ERPNext galicea.transmem.pl, na który rozlicza się projekt Taigi 'galwork'. Osoby: celowo puste - mapowanie przez propozycje po e-mailu (pm_taiga.py persons 7 --apply, potem confirm-person), zob. WDROZENIE.md krok E.",
+  "_billing_from": "2026-11-30 = poniedziałek 2026-W49, pierwszego tygodnia grudnia wg reguły czwartku (rozliczenia miesięczne, D11). Zmiany godzin sprzed tej daty nie są księgowane.",
+  "_konto_techniczne": "Taiga: konto 'galwork' (id 9) - [taiga] technical_user_id=9; bez wpisu w pm_person_link.",
+  "pm_taiga_project_link": [
+    {
+      "taiga_project_id": 7,
+      "taiga_slug": "galwork",
+      "erp_project": "UZUPELNIJ-PROJ-xxxx",
+      "hours_attribute_id_task": 1,
+      "hours_attribute_id_us": 1,
+      "hours_attribute_name": "Czas [h]",
+      "default_activity_type": null,
+      "billable": false,
+      "triage_group": null,
+      "billing_from": "2026-11-30",
+      "active": true
+    }
+  ],
+  "pm_person_link": []
+}

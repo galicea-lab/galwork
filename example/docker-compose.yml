@@ -15,10 +15,11 @@ services:
     ports:
       - "${HUB_PORT:-8000}:8000"
     # wspólny katalog definicji obiegów (BPMN + formularze)
-    # zamiast kopii wypieczonej w obrazie. Hub tylko czyta - zmiany wczytuje
-    # POST /v1/wf/process-models/sync-from-disk (jako wersje draft).
+    # zamiast kopii wypieczonej w obrazie. Hub czyta i zapisuje (edytory areny,
+    # API /v1/wf/process-files); wersje draft tworzy
+    # POST /v1/wf/process-models/sync-from-disk.
     volumes:
-      - ${SPIFFWORKFLOW_DIR:?ustaw SPIFFWORKFLOW_DIR w .env}:/app/spiffworkflow:ro
+      - ${SPIFFWORKFLOW_DIR:?ustaw SPIFFWORKFLOW_DIR w .env}:/app/spiffworkflow
     restart: unless-stopped
 
   arena:
@@ -31,22 +32,3 @@ services:
       - hub
     restart: unless-stopped
 
-  # serwer plików edytorów BPMN/formularzy areny
-  # (galwork-arena/server/bpmn-files.mjs, bez zależności npm) na tym samym
-  # wspólnym katalogu co hub. Nie ma własnej autoryzacji - port tylko na
-  # 127.0.0.1, dostęp z zewnątrz wyłącznie przez nginx hosta z hasłem
-  # (location /bpmn-files/ w galwork_arena.conf).
-  bpmn-files:
-    image: node:20-alpine
-    user: "${GALWORK_UID:-1000}:${GALWORK_GID:-1000}"
-    command: ["node", "/opt/bpmn/server/bpmn-files.mjs"]
-    environment:
-      BPMN_FILES_HOST: 0.0.0.0
-      BPMN_FILES_PORT: 8090
-      SPIFFWORKFLOW_DIR: /data/spiffworkflow
-    volumes:
-      - ${BPMN_FILES_SCRIPT:-./galwork-arena/server/bpmn-files.mjs}:/opt/bpmn/server/bpmn-files.mjs:ro
-      - ${SPIFFWORKFLOW_DIR:?ustaw SPIFFWORKFLOW_DIR w .env}:/data/spiffworkflow
-    ports:
-      - "127.0.0.1:${BPMN_FILES_PORT:-8090}:8090"
-    restart: unless-stopped
