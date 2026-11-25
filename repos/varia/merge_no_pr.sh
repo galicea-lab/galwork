@@ -1,4 +1,7 @@
 #!/bin/bash
+echo "Uwaga! Wbrew zasadom ominie PR! Używaj z rozwagą! Jeśli chcesz kontynuować naciśniej Enter. W p.p. ^C"
+read e
+
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

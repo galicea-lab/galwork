@@ -98,8 +98,7 @@ Wersje wstępne (`v1.2.0-rc.1`) trafiają tylko do rejestru Forgejo, nie na GitH
   commita. Uruchamiać zaraz po `git clone`.
 * `varia/` – skrypty awaryjne **poza zasadami** powyżej, tylko w uzasadnionych przypadkach:
   `merge_no_pr.sh` (scalenie do `main` z pominięciem PR), `removetag.sh` (usunięcie taga
-  lokalnie), `renew_tag.sh` (przesunięcie i wymuszone wypchnięcie taga – **nie używać dla
-  tagów wydań**, które już uruchomiły publikację), `storepass.sh` (pamięć podręczna
+  lokalnie - uwaga - wbrew zasadom), `storepass.sh` (pamięć podręczna
   poświadczeń Git na 8 h).
 
 ## Logowanie do serwera Git
